@@ -1,12 +1,12 @@
 Metadata-Version: 2.1
 Name: py-tiny
-Version: 0.0.4
+Version: 0.0.5
 Summary: Wrapper não oficial do Tiny V2
 Home-page: UNKNOWN
 Author: Yuri Gomes
 Author-email: yurialdegomes@gmail.com
 License: MIT License
-Keywords: clickup
+Keywords: tiny
 Platform: UNKNOWN
 Description-Content-Type: text/markdown
 License-File: LICENSE
