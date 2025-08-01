@@ -129,3 +129,215 @@ class conta(auth):
         
         else:
             return {}
+        
+class produtos(auth):
+
+    def pesquisar(self, pesquisa, idTag=None, idListaPreco=None, pagina=None, gtin=None, situacao=None, dataCriacao=None, **kwargs):
+        """
+        Pesquisar produtos no Tiny ERP.
+        
+        Args:
+            pesquisa (str): Nome ou código (ou parte) do produto que deseja consultar (obrigatório)
+            idTag (int, optional): Número de identificação da tag no Tiny
+            idListaPreco (int, optional): Número de identificação da lista de preço no Tiny
+            pagina (int, optional): Número da página (padrão são listados 100 registros por página)
+            gtin (str, optional): GTIN/EAN do produto
+            situacao (str, optional): Situação dos produtos ("A" - Ativo, "I" - Inativo ou "E" - Excluído)
+            dataCriacao (str, optional): Data de criação do produto. Formato dd/mm/aaaa hh:mm:ss
+            **kwargs: Parâmetros adicionais
+            
+        Returns:
+            dict: Resposta da API com os produtos encontrados
+        """
+        
+        asct = True  # Acesso Só Com Token
+
+        if asct and (self.access_token == "" or self.access_token == None or type(self.access_token) != str):
+            print("Token inválido")
+            return {}
+
+        url = self.base_url + "/produtos.pesquisa.php"
+
+        params = {
+            'pesquisa': pesquisa
+        }
+
+        # Adicionar parâmetros opcionais se fornecidos
+        if idTag is not None:
+            params['idTag'] = idTag
+        if idListaPreco is not None:
+            params['idListaPreco'] = idListaPreco
+        if pagina is not None:
+            params['pagina'] = pagina
+        if gtin is not None:
+            params['gtin'] = gtin
+        if situacao is not None:
+            params['situacao'] = situacao
+        if dataCriacao is not None:
+            params['dataCriacao'] = dataCriacao
+
+        # Adicionar parâmetros extras do kwargs
+        if kwargs:
+            for key, value in kwargs.items():
+                params[key] = value
+
+        response = self.request("GET", url=url, params=params)
+
+        if response:
+            return response.json()
+        else:
+            return {}
+
+    def obter(self, id, **kwargs):
+        """
+        Obter dados detalhados de um produto específico no Tiny ERP.
+        
+        Args:
+            id (int): Número de identificação do produto no Tiny (obrigatório)
+            **kwargs: Parâmetros adicionais
+            
+        Returns:
+            dict: Resposta da API com os dados completos do produto
+        """
+        
+        asct = True  # Acesso Só Com Token
+
+        if asct and (self.access_token == "" or self.access_token == None or type(self.access_token) != str):
+            print("Token inválido")
+            return {}
+
+        url = self.base_url + "/produto.obter.php"
+
+        params = {
+            'id': id
+        }
+
+        # Adicionar parâmetros extras do kwargs
+        if kwargs:
+            for key, value in kwargs.items():
+                params[key] = value
+
+        response = self.request("GET", url=url, params=params)
+
+        if response:
+            return response.json()
+        else:
+            return {}
+
+    def alterar(self, produto, **kwargs):
+        """
+        Alterar um produto existente no Tiny ERP.
+        
+        Args:
+            produto (dict): Dados do produto conforme layout da API (obrigatório)
+                          Deve conter pelo menos o campo 'id' para identificar o produto
+            **kwargs: Parâmetros adicionais
+            
+        Returns:
+            dict: Resposta da API com o resultado da alteração
+        """
+        
+        asct = True  # Acesso Só Com Token
+
+        if asct and (self.access_token == "" or self.access_token == None or type(self.access_token) != str):
+            print("Token inválido")
+            return {}
+
+        url = self.base_url + "/produto.alterar.php"
+
+        params = {}
+
+        # Adicionar parâmetros extras do kwargs
+        if kwargs:
+            for key, value in kwargs.items():
+                params[key] = value
+
+        # Converter produto para JSON se for um dict
+        if isinstance(produto, dict):
+            produto_json = json.dumps(produto, ensure_ascii=False)
+        else:
+            produto_json = produto
+
+        data = {
+            'produto': produto_json
+        }
+
+        response = self.request("POST", url=url, params=params, data=data)
+
+        if response:
+            return response.json()
+        else:
+            return {}
+
+    def obter_estoque(self, id, **kwargs):
+        """
+        Obter informações de estoque de um produto específico no Tiny ERP.
+        
+        Args:
+            id (int): Número de identificação do produto no Tiny (obrigatório)
+            **kwargs: Parâmetros adicionais
+            
+        Returns:
+            dict: Resposta da API com as informações de estoque do produto
+        """
+        
+        asct = True  # Acesso Só Com Token
+
+        if asct and (self.access_token == "" or self.access_token == None or type(self.access_token) != str):
+            print("Token inválido")
+            return {}
+
+        url = self.base_url + "/produto.obter.estoque.php"
+
+        params = {
+            'id': id
+        }
+
+        # Adicionar parâmetros extras do kwargs
+        if kwargs:
+            for key, value in kwargs.items():
+                params[key] = value
+
+        response = self.request("GET", url=url, params=params)
+
+        if response:
+            return response.json()
+        else:
+            return {}
+
+    def obter_estrutura(self, id, **kwargs):
+        """
+        Obter a estrutura/composição de um produto no Tiny ERP.
+        
+        Args:
+            id (int): Número de identificação do produto no Tiny (obrigatório)
+            **kwargs: Parâmetros adicionais
+            
+        Returns:
+            dict: Resposta da API com a estrutura/composição do produto
+        """
+        
+        asct = True  # Acesso Só Com Token
+
+        if asct and (self.access_token == "" or self.access_token == None or type(self.access_token) != str):
+            print("Token inválido")
+            return {}
+
+        url = self.base_url + "/produto.obter.estrutura.php"
+
+        params = {
+            'id': id
+        }
+
+        # Adicionar parâmetros extras do kwargs
+        if kwargs:
+            for key, value in kwargs.items():
+                params[key] = value
+
+        response = self.request("GET", url=url, params=params)
+
+        if response:
+            return response.json()
+        else:
+            return {}
+
