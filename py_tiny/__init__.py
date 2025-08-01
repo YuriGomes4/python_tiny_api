@@ -1,1 +1,1 @@
-from .wrapper import espacos, listas, pastas, tarefas
+from .wrapper import conta
