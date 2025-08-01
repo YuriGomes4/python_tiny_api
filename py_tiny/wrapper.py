@@ -12,7 +12,7 @@ def rate_limiter(func):
         access_token = args[0].access_token if args else None
         if access_token and access_token in dados_requests:
             # Check if the rate limit has been reached
-            if dados_requests[access_token]['uso_api'] >= int(dados_requests[access_token]['limite']):
+            if dados_requests[access_token]['uso_api'] >= int(dados_requests[access_token]['limite']) and dados_requests[access_token]['hora_primeira_requisicao'] + 60 > time():
                 elapsed_time = time() - dados_requests[access_token]['hora_primeira_requisicao']
                 if elapsed_time < 60:
                     print(f"Rate limit reached for access token {access_token}. Waiting for {60 - elapsed_time:.2f} seconds.")
