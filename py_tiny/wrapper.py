@@ -159,7 +159,8 @@ class produtos(auth):
         url = self.base_url + "/produtos.pesquisa.php"
 
         params = {
-            'pesquisa': pesquisa
+            'pesquisa': pesquisa,
+            'pagina': 1
         }
 
         # Adicionar parâmetros opcionais se fornecidos
@@ -184,9 +185,42 @@ class produtos(auth):
         response = self.request("GET", url=url, params=params)
 
         if response:
-            return response.json()
+            if response.json()['retorno']['status_processamento'] == '3':
+                pagina_atual = int(response.json()['retorno']['pagina'])
+                numero_paginas = response.json()['retorno']['numero_paginas']
+
+                produtos = []
+
+                for produto in response.json()['retorno']['produtos']:
+                    produtos.append(produto['produto'])
+
+                tentativas = 0
+                max_tentativas = 5
+
+                while pagina_atual < numero_paginas:
+                    pagina_atual += 1
+                    params['pagina'] = pagina_atual
+
+                    response2 = self.request("GET", url=url, params=params)
+
+                    if response2:
+                        if response2.json()['retorno']['status_processamento'] == '3':
+                            for produto in response2.json()['retorno']['produtos']:
+                                produtos.append(produto['produto'])
+                            tentativas = 0
+                        else:
+                            if tentativas >= max_tentativas:
+                                print(f"Erro ao obter mais produtos: {response2.json()['retorno']['status_processamento']}")
+                                break
+                            tentativas += 1
+                            sleep(1)  # Espera um pouco antes de tentar novamente
+
+                return produtos
+            else:
+                return []
+
         else:
-            return {}
+            return []
 
     def obter(self, id, **kwargs):
         """
